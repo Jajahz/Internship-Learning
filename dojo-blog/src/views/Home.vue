@@ -1,8 +1,11 @@
 <script>
 import { ref, reactive, computed, watch, watchEffect } from 'vue'
+import PostList from '@/components/PostList.vue'
+import getPosts from '../composables/getPosts'
 
 export default {
   name: 'Home',
+  components: { PostList },
   setup() {
     // let name = ref('mario')
     // let age = ref(30)
@@ -32,35 +35,38 @@ export default {
     //     return 'shaun'
     // })
 
-    const names = ref(['shuan', 'risa', 'bowser', 'mario', 'jajah', 'arm'])
-    const search = ref('')
+    // const names = ref(['shuan', 'risa', 'bowser', 'mario', 'jajah', 'arm'])
+    // const search = ref('')
 
-    const stopWatch = watch(search, () => {
-      console.log('search changed')
-    })
+    // const stopWatch = watch(search, () => {
+    //   console.log('search changed')
+    // })
 
-    const stopEff = watchEffect(() => {
-      console.log('watchEff run', search.value)
-    })
+    // const stopEff = watchEffect(() => {
+    //   console.log('watchEff run', search.value)
+    // })
 
-    const matchingNames = computed(() => {
-      return names.value.filter((name) => name.includes(search.value))
-    })
+    // const matchingNames = computed(() => {
+    //   return names.value.filter((name) => name.includes(search.value))
+    // })
 
-    const handleClick = () => {
-        stopWatch()
-        stopEff()
-    }
+    // const handleClick = () => {
+    //     stopWatch()
+    //     stopEff()
+    // }
+
+    const {posts,error,load} = getPosts()
+
+    load()
 
     return {
       //   name,
-      names,
-      search,
-      matchingNames,
-      stopWatch,
-      stopEff,
-      handleClick,
-
+      // names,
+      // search,
+      // matchingNames,
+      // stopWatch,
+      // stopEff,
+      // handleClick,
       //   age,
       //   handleClick,
       //   ninjaOne,
@@ -69,6 +75,9 @@ export default {
       //   updateNinjaTwo,
       //   nameOne,
       //   nameTwo,
+
+      posts,
+      error
     }
   },
 }
@@ -76,8 +85,8 @@ export default {
 
 <template>
   <div class="home">
-    <!-- <p>Home</p>
-    <p>my name is {{ name }} and my age is {{ age }}</p>
+    <h1>Home</h1>
+    <!-- <p>my name is {{ name }} and my age is {{ age }}</p>
     <button @click="handleClick">click me</button>
     <button @click="age++">increase age</button>
     <br />
@@ -94,12 +103,18 @@ export default {
 
     <!-- <p>{{ name }}</p> -->
 
-    <input type="text" v-model="search" />
+    <!-- <input type="text" v-model="search" />
     <p>search term - {{ search }}</p>
     <div v-for="name in matchingNames" :key="name">
       {{ name }}
     </div>
-    <button @click="handleClick">stop watching</button>
+    <button @click="handleClick">stop watching</button> -->
+    <div v-if="error">
+      <h1>{{ error }}</h1>
+    </div>
+
+    <div v-if="posts.length"><PostList :posts="posts" /></div>
+    <div v-else>Loading...</div>
   </div>
 </template>
 
